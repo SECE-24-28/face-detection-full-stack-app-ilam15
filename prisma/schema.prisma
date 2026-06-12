@@ -1,0 +1,38 @@
+datasource db {
+  provider = "postgresql"
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id        String     @id @default(uuid())
+  email     String     @unique
+  password  String
+  name      String
+  avatar    String?
+  scans     FaceScan[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model FaceScan {
+  id            String   @id @default(uuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  imageUrl      String
+  faceToken     String
+  age           Int
+  gender        String
+  smile         Float
+  emotion       Json     // e.g. { anger: 0.0, happiness: 100.0, ... }
+  beautyScore   Json     // e.g. { male: 85.0, female: 88.0 }
+  skinStatus    Json     // e.g. { acne: 0.1, stain: 0.2, ... }
+  eyeStatus     Json     // e.g. { left_eye_open: 1.0, ... }
+  mouthStatus   Json     // e.g. { open: 0.0, ... }
+  headPose      Json     // e.g. { pitch_angle: 0.0, ... }
+  landmarks     Json     // e.g. { nose_tip: { x: 100, y: 150 }, ... }
+  faceRectangle Json     // e.g. { top: 100, left: 150, width: 200, height: 200 }
+  createdAt     DateTime @default(now())
+}
